@@ -1,0 +1,26 @@
+version: "3"
+services:
+    portainer:
+        image: portainer/portainer:latest
+        ports:
+            - "9000:9000"
+            - "8000:8000"
+        volumes:
+            - portainer_data:/data
+
+    emqx:
+        image: emqx/emqx:latest
+        environment:
+            - EMQX_NODE__NAME=csro-mqtt@csro.server
+        restart: always
+        ports:
+            - "18083:18083"
+            - "1883:1883"
+        volumes:
+            - ./emqx-log:/opt/emqx/log
+            - ./emqx-config:/opt/emqx/etc
+            - ./emqx-data:/opt/emqx/data
+            - ./emqx-lib:/opt/emqx/lib
+
+volumes:
+    portainer_data:

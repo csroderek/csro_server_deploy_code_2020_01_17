@@ -6,8 +6,25 @@ sudo apt-get upgrade
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 
-#install docker compose
-sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+#install portainer
+docker volume create portainer_data
+docker run -d -p 8000:8000 -p 9000:9000 --restart always --name csro-portainer -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:latest
+
+#install emqx
+docker volume create emqx_config 
+docker volume create emqx_data 
+docker volume create emqx_lib 
+docker volume create emqx_log
+docker run -d --name csro-emqx --restart always -p 18083:18083 -p 1883:1883 -v emqx_config:/opt/emqx/etc -v emqx_data:/opt/emqx/data -v emqx_lib:/opt/emqx/lib -v emqx_log:/opt/emqx/log emqx/emqx:latest 
+
+
+#install hassio
+add-apt-repository universe
+sudo -i
+apt-get install software-properties-common
+apt-get update
+apt-get install -y apparmor-utils apt-transport-https avahi-daemon ca-certificates curl dbus jq network-manager socat
+systemctl disable ModemManager
+curl -sL https://raw.githubusercontent.com/home-assistant/hassio-installer/master/hassio_install.sh | bash -s
 
 
