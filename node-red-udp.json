@@ -1,0 +1,71 @@
+[
+  {
+    "id": "d0ca478d.7ad438",
+    "type": "tab",
+    "label": "UDP_BroadCast",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "a0c76b86.762c08",
+    "type": "ip",
+    "z": "d0ca478d.7ad438",
+    "name": "ip",
+    "https": false,
+    "timeout": "5000",
+    "internalIPv4": true,
+    "internalIPv6": false,
+    "publicIPv4": false,
+    "publicIPv6": false,
+    "x": 660,
+    "y": 360,
+    "wires": [["ec2d3697.de2228"]]
+  },
+  {
+    "id": "7f947b18.f2fea4",
+    "type": "inject",
+    "z": "d0ca478d.7ad438",
+    "name": "",
+    "topic": "interval_ip",
+    "payload": "true",
+    "payloadType": "bool",
+    "repeat": "2",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "x": 450,
+    "y": 360,
+    "wires": [["a0c76b86.762c08"]]
+  },
+  {
+    "id": "ec2d3697.de2228",
+    "type": "template",
+    "z": "d0ca478d.7ad438",
+    "name": "server",
+    "field": "payload",
+    "fieldType": "msg",
+    "format": "handlebars",
+    "syntax": "mustache",
+    "template": "{\"server\":\"{{payload.internalIPv4}}\"}",
+    "output": "str",
+    "x": 830,
+    "y": 360,
+    "wires": [["969b0cc7.07b28"]]
+  },
+  {
+    "id": "969b0cc7.07b28",
+    "type": "udp out",
+    "z": "d0ca478d.7ad438",
+    "name": "server ip broadcast",
+    "addr": "255.255.255.255",
+    "iface": "",
+    "port": "5000",
+    "ipv": "udp4",
+    "outport": "",
+    "base64": false,
+    "multicast": "broad",
+    "x": 1070,
+    "y": 360,
+    "wires": []
+  }
+]

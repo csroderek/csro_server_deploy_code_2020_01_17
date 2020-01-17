@@ -1,0 +1,149 @@
+[
+  {
+    "id": "52e0b7f0.577c58",
+    "type": "tab",
+    "label": "ThingsBorad",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "7eed3e3b.27d89",
+    "type": "inject",
+    "z": "52e0b7f0.577c58",
+    "name": "thingsboard_update",
+    "topic": "thingsboard_update",
+    "payload": "true",
+    "payloadType": "bool",
+    "repeat": "5",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "x": 160,
+    "y": 940,
+    "wires": [["782e46af.f917c8"]]
+  },
+  {
+    "id": "e6d134b0.0bd7b8",
+    "type": "debug",
+    "z": "52e0b7f0.577c58",
+    "name": "",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 830,
+    "y": 1100,
+    "wires": []
+  },
+  {
+    "id": "8e7619e5.21dcd8",
+    "type": "simpletime",
+    "z": "52e0b7f0.577c58",
+    "name": "add_timestamp",
+    "x": 140,
+    "y": 1040,
+    "wires": [["6a331efe.0a3bd"]]
+  },
+  {
+    "id": "6a331efe.0a3bd",
+    "type": "function",
+    "z": "52e0b7f0.577c58",
+    "name": "thingsboard_telemetry",
+    "func": "var device_array= msg.payload;\nvar time_stamp = msg.myepoch;\n\nvar telemetry=new Object({});\n\ndevice_array.forEach(function(device){\n    var values_obj= new Object({});\n    Object.keys(device.attributes).forEach(function(key){\n        \n        var obj_type = typeof(device.attributes[key]);\n        \n        if(obj_type==\"boolean\"||obj_type==\"number\"||obj_type==\"string\")\n        {\n            values_obj[\"attributes.\"+key]=device.attributes[key];\n        }\n        \n    })\n    \n    Object.keys(device.context).forEach(function(key){\n        var obj_type = typeof(device.context[key]);\n        if(obj_type==\"boolean\"||obj_type==\"number\"||obj_type==\"string\")\n        {\n            values_obj[\"context.\"+key]=device.context[key];\n        }\n    })\n    \n    Object.keys(device).forEach(function(key){\n        var obj_type = typeof(device[key]);\n        if(obj_type==\"boolean\"||obj_type==\"number\"||obj_type==\"string\")\n        {\n            if(key!=\"last_changed\"&&key!=\"last_updated\")\n            {\n               values_obj[key]=device[key]; \n            }\n        }\n    })\n    var device_name = \"004e019fd644.\" + device.attributes.friendly_name\n    telemetry[device_name]=[{\n        ts:time_stamp,\n        values:values_obj\n    }];\n})\nmsg.payload=telemetry\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 420,
+    "y": 1040,
+    "wires": [["9b7ec6ad.647e28"]]
+  },
+  {
+    "id": "a7324087.4739",
+    "type": "function",
+    "z": "52e0b7f0.577c58",
+    "name": "entity_filter",
+    "func": "var entity_array= msg.payload;\n\nvar entity_array_filted=entity_array.filter(function(entity){\n\n    entity_type=entity.entity_id.split(\".\")[0]\n    \n    return (entity_type!=\"group\" && entity_type!=\"scene\" && entity_type!=\"automation\")\n});\n\nmsg.payload=entity_array_filted;\n\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 670,
+    "y": 940,
+    "wires": [["8e7619e5.21dcd8"]]
+  },
+  {
+    "id": "9b7ec6ad.647e28",
+    "type": "json",
+    "z": "52e0b7f0.577c58",
+    "name": "",
+    "property": "payload",
+    "action": "",
+    "pretty": false,
+    "x": 630,
+    "y": 1040,
+    "wires": [["e6d134b0.0bd7b8", "ff108186.b922d"]]
+  },
+  {
+    "id": "ff108186.b922d",
+    "type": "mqtt out",
+    "z": "52e0b7f0.577c58",
+    "name": "mqtt_telemetry",
+    "topic": "v1/gateway/telemetry",
+    "qos": "2",
+    "retain": "false",
+    "broker": "cfc50662.ed8658",
+    "x": 840,
+    "y": 1040,
+    "wires": []
+  },
+  {
+    "id": "782e46af.f917c8",
+    "type": "ha-get-entities",
+    "z": "52e0b7f0.577c58",
+    "server": "88dab8c0.83d748",
+    "name": "obtain_all_entities",
+    "rules": [
+      {
+        "property": "entity_id",
+        "logic": "is_not",
+        "value": "null",
+        "valueType": "str"
+      }
+    ],
+    "output_type": "array",
+    "output_empty_results": false,
+    "output_location_type": "msg",
+    "output_location": "payload",
+    "output_results_count": 1,
+    "x": 450,
+    "y": 940,
+    "wires": [["a7324087.4739"]]
+  },
+  {
+    "id": "cfc50662.ed8658",
+    "type": "mqtt-broker",
+    "z": "",
+    "name": "csro_cloud",
+    "broker": "csro.net.cn",
+    "port": "1884",
+    "clientid": "CSRO_Gateway_004e019fd644",
+    "usetls": false,
+    "compatmode": false,
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": ""
+  },
+  {
+    "id": "88dab8c0.83d748",
+    "type": "server",
+    "z": "",
+    "name": "Home Assistant"
+  }
+]

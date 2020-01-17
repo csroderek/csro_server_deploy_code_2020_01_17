@@ -1,0 +1,120 @@
+[
+  {
+    "id": "3851267f.b9968a",
+    "type": "tab",
+    "label": "一键灯光控制",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "adc2dee2.aa1d4",
+    "type": "server-events",
+    "z": "3851267f.b9968a",
+    "name": "",
+    "server": "88dab8c0.83d748",
+    "event_type": "xiaomi_aqara.click",
+    "x": 350,
+    "y": 140,
+    "wires": [["3311964b.032faa"]]
+  },
+  {
+    "id": "3311964b.032faa",
+    "type": "switch",
+    "z": "3851267f.b9968a",
+    "name": "click_type",
+    "property": "payload.event.click_type",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "eq",
+        "v": "double",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "single",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "long_click_press",
+        "vt": "str"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 3,
+    "x": 620,
+    "y": 140,
+    "wires": [["e3eb8c94.cb6ef"], ["d31ae27b.28be5"], ["689fbec1.d1ac6"]]
+  },
+  {
+    "id": "d31ae27b.28be5",
+    "type": "api-call-service",
+    "z": "3851267f.b9968a",
+    "name": "part on",
+    "server": "88dab8c0.83d748",
+    "version": 1,
+    "debugenabled": false,
+    "service_domain": "light",
+    "service": "turn_on",
+    "entityId": "light.gateway_light_04cf8c914c50, light.wo_shi_tai_deng",
+    "data": "",
+    "dataType": "json",
+    "mergecontext": "",
+    "output_location": "",
+    "output_location_type": "none",
+    "mustacheAltTags": false,
+    "x": 850,
+    "y": 160,
+    "wires": [[]]
+  },
+  {
+    "id": "e3eb8c94.cb6ef",
+    "type": "api-call-service",
+    "z": "3851267f.b9968a",
+    "name": "all off",
+    "server": "88dab8c0.83d748",
+    "version": 1,
+    "debugenabled": false,
+    "service_domain": "light",
+    "service": "turn_off",
+    "entityId": "light.nlight4_0_beddc245ceb8, light.nlight4_1_beddc245ceb8, light.gateway_light_04cf8c914c50, light.wo_shi_tai_deng",
+    "data": "",
+    "dataType": "json",
+    "mergecontext": "",
+    "output_location": "",
+    "output_location_type": "none",
+    "mustacheAltTags": false,
+    "x": 850,
+    "y": 60,
+    "wires": [[]]
+  },
+  {
+    "id": "689fbec1.d1ac6",
+    "type": "api-call-service",
+    "z": "3851267f.b9968a",
+    "name": "all on",
+    "server": "88dab8c0.83d748",
+    "version": 1,
+    "debugenabled": false,
+    "service_domain": "light",
+    "service": "turn_on",
+    "entityId": "light.nlight4_0_beddc245ceb8, light.nlight4_1_beddc245ceb8, light.gateway_light_04cf8c914c50, light.wo_shi_tai_deng",
+    "data": "",
+    "dataType": "json",
+    "mergecontext": "",
+    "output_location": "",
+    "output_location_type": "none",
+    "mustacheAltTags": false,
+    "x": 850,
+    "y": 260,
+    "wires": [[]]
+  },
+  {
+    "id": "88dab8c0.83d748",
+    "type": "server",
+    "z": "",
+    "name": "Home Assistant"
+  }
+]
