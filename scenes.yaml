@@ -1,0 +1,9 @@
+- id: 回家 # <-- Required for editor to work.
+  name: Home
+  entities:
+      light.nlight4_1_beddc245ceb8: on
+
+- id: 离家 # <-- Required for editor to work.
+  name: Away
+  entities:
+      light.nlight4_1_beddc245ceb8: on

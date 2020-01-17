@@ -1,0 +1,27 @@
+default_view:
+    name: Home
+    view: yes
+    entities:
+     - sensor.airmon_pm1_a220a629de50
+     - sensor.airmon_hcho_a220a629de50
+  
+  exterior:
+    name: Exterior
+    entities:
+     - binary_sensor.switch_158d0002b2e855
+     - sensor.humidity_158d00025ea38a
+     - sensor.humidity_158d0002e76854
+  
+  garage:
+    name: Garage
+    view: yes
+    entities:
+     - light.nlight4_2_beddc245ceb8
+     - light.nlight4_1_beddc245ceb8
+  
+  system:
+    name: System
+    view: yes
+    entities:
+     - light.nlight4_0_beddc245ceb8
+     - sensor.temperature_158d00025ea38a
